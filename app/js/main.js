@@ -1,15 +1,19 @@
 //Document ready
 $(function () {
-    let counter = 0;
-    var firstMess = true;
-    $("#user").val('');
+    const user = $('#user'),
+        name = $("#Nome"),
+        surname = $("#Cognome"),
+        subject = $("#Oggetto"),
+        message = $("#Messaggio");
 
+    let fieldFilled = 0;
+    $("#user").val('');
     setInterval(function () {
         $.ajax("http://172.16.15.200:3000/pull")
             .done(elemt => {
                 console.log(elemt.messages);
                 elemt.messages.forEach(element => {
-                    getData(element.name, element.subject, element.message);
+                    stampData(element.name, element.subject, element.message);
                 });
             });
     }, 1000);
@@ -18,179 +22,122 @@ $(function () {
     $("#Invia").on('click', evento => {
         evento.preventDefault();
 
-        $('form p').each(index => {
-            $('form p').remove();
-        });
+        removeObject([$('form p')]);
 
-        if (firstMess) {
-            if (check($("#Nome").val()) && $("#Nome").val().length >= 3) {
-                counter++;
+        //If user hasn't a value check name and surname
+        //Or if it has a value skip
+        if (!user.val()) {
+            if (check(name.val()) && name.val().length >= 3) {
+                fieldFilled++;
             } else {
                 let p = "Inserisci un nome che abbia una lunghezza maggiore di 3 caratteri";
-                $("#Nome").after('<p>' + p);
+                name.after('<p>' + p);
             }
 
-            if (check($("#Cognome").val()) && $("#Cognome").val().length >= 3) {
-                counter++;
+            if (check(surname.val()) && surname.val().length >= 3) {
+                fieldFilled++;
             } else {
                 let p = "Inserisci un cognome che abbia una lunghezza maggiore di 3 caratteri";
-                $("#Cognome").after('<p>' + p);
+                surname.after('<p>' + p);
             }
-            $('#user').val($("#Nome").val() + " " + $("#Cognome").val());
-        } else {
-            counter = counter + 2;
         }
 
-        if (check($("#Messaggio").val()) && $("#Messaggio").val().length >= 1) {
-            counter++;
+        if (check(message.val()) && message.val().length >= 1) {
+            fieldFilled++;
         } else {
             let p = "Inserisci un messaggio che abbia una lunghezza maggiore di 1 caratteri";
-            $("#Messaggio").after('<p>' + p);
+            message.after('<p>' + p);
         }
-        console.log(counter);
-        if (check($("#Oggetto").val()) && check($("#Oggetto").val().length >= 5)) {
-            if (counter == 3) {
-                // $("form").fadeOut();
-                stamp(2);
-                removeClas();
-                counter = 0;
+
+        if ((check(subject.val()) && subject.val().length >= 5) || (!check(subject.val()))) {
+            //Check if all the field is filled 
+            //Or is user is set check only message
+            if (fieldFilled == 3 || (!!user.val() && fieldFilled == 1)) {
+                if (!user.val()) {
+                    user.val(name.val() + " " + surname.val());
+                    removeObject([name, surname, $('label[for=Nome]'), $('label[for=Cognome]')]);
+                }
+
+                sendToSever(user.val(), subject.val(), message.val());
+                stampData(user.val(), subject.val(), message.val());
             }
-        } else if (!check($("#Oggetto").val())) {
-            if (counter == 3) {
-                // $("form").fadeOut();
-                stamp(1);
-                removeClas();
-                counter = 0;
-            }
-        } else if (check($("#Oggetto").val().length < 5)) {
+
+            fieldFilled = 0;
+        } else if (subject.val().length < 5) {
             let p = "Inserisci un oggetto che abbia una lunghezza maggiore di 5 caratteri.";
-            $("#Oggetto").after('<p>' + p);
+            subject.after('<p>' + p);
         }
-        if (counter > 3) {
-            counter = 0;
+        if (fieldFilled > 3) {
+            fieldFilled = 0;
         }
     })
 
-    function removeClas() {
-        setTimeout(() => {
-            $(".hidden").removeClass("hidden");
-            setTimeout(() => {
-                $(".message").fadeIn();
-            }, 250);
-        }, 500);
+    /**
+     * @param {Array of object} object 
+     */
+    function removeObject(object) {
+        object.forEach(index => {
+            index.remove();
+        })
     }
 
-    function stamp(val) {
-        if (counter == 3) {
-            firstMess = false;
-            $(".errore").html("");
-
-            let divMessage = $('<div>');
-            divMessage.addClass('message');
-
-            let labName = $("<p>");
-            if (firstMess) {
-                labName.html($("#Nome").val() + " " + $("#Cognome").val());
-                $("#Nome , label[for=Nome]").remove();
-                $("#Cognome , label[for=Cognome]").remove();
-                $("#user").val($("#Nome").val() + " " + $("#Cognome").val());
-            } else {
-                $("#Nome , label[for=Nome]").remove();
-                $("#Cognome , label[for=Cognome]").remove();
-                labName.html($("#user").val());
-            }
-
-            let labMessaggio = $("<p>");
-            labMessaggio.html($("#Messaggio").val());
-
-            divMessage.append(labName);
-
-            if (val === 2) {
-                let labOggetto = $("<p>");
-                labOggetto.html($("#Oggetto").val());
-                divMessage.append(labOggetto);
-            } else {
-                let labOggetto = $("<p>");
-                labOggetto.html("");
-                divMessage.append(labOggetto);
-            }
-            divMessage.append(labMessaggio);
-
-            $('.allMessage').prepend(divMessage);
-
-            divMessage.addClass('newMessage newMessage-active');
-
-            // blink();
-            let messaggio = $("#Messaggio").val();
-            console.log(messaggio);
-            let oggetto = $("#Oggetto").val();
-            console.log(oggetto);
-            let nome = $("#Nome").val() + " " + $("#Cognome").val();
-
-            if (!!nome) {
-                nome = $("#user").val();
-            }
-            console.log($("#user").val());
-            if (oggetto == undefined) {
-                oggetto = "Null";
-            }
-
-            var mystring = {
-                "id": 7,
-                "name": nome,
-                "subject": oggetto,
-                "message": messaggio
-            }
-
-            setTimeout(() => {
-                divMessage.removeClass('newMessage-active');
-            }, 2000);
-
-            $.ajax({
-                url: "http://172.16.15.200:3000/push",
-                dataType: "json",
-                data: {
-                    "message": encodeURIComponent(JSON.stringify(mystring))
-                },
-                statusCode: {
-                    200: function () {
-                        console.log("Message is pushed");
-                    }
-                }
-            });
-            emptyAllCells();
+    /**
+     * @param {string} nome 
+     * @param {string} oggetto 
+     * @param {string} messaggio 
+     */
+    function sendToSever(nome, oggetto, messaggio) {
+        if (oggetto == undefined) {
+            oggetto = " ";
         }
+
+        var mystring = {
+            "id": 7,
+            "name": nome,
+            "subject": oggetto,
+            "message": messaggio
+        }
+
+        $.ajax({
+            url: "http://172.16.15.200:3000/push",
+            dataType: "json",
+            data: {
+                "message": encodeURIComponent(JSON.stringify(mystring))
+            },
+            statusCode: {
+                200: function () {
+                    console.log("Message is pushed");
+                }
+            }
+        });
     }
 
-    function getData(nome, subject, messagge) {
-        let cognome = nome.split(' ');
-
+    function stampData(name, subject, messagge) {
+        //Set div of single message
         let divMessage = $('<div>');
         divMessage.addClass('message');
 
+        //Set p of name
         let labName = $("<p>");
-        labName.html(cognome[0] + " " + cognome[1]);
+        labName.html(name);
 
+        //Set p for body of message
         let labMessaggio = $("<p>");
         labMessaggio.html(messagge);
 
-        divMessage.append(labName);
-
+        //Set p of subject
         let labOggetto = $("<p>");
         labOggetto.html(subject);
-        divMessage.append(labOggetto);
 
-        emptyAllCells();
+        //Set all in a master div
+        divMessage.append(labName);
+        divMessage.append(labOggetto);
         divMessage.append(labMessaggio);
 
-        $('.allMessage').prepend(divMessage);
-    }
+        emptyAllCells();
 
-    function blink() {
-        $('.allMessage').addClass('newMessage-active');
-        setTimeout(() => {
-            $('.allMessage').removeClass('newMessage-active')
-        }, 2000);
+        //Print message in allMessage div
+        $('.allMessage').prepend(divMessage);
     }
 
     function emptyAllCells() {
@@ -199,6 +146,10 @@ $(function () {
         })
     }
 
+    /**
+     * 
+     * @param {Object} element 
+     */
     function check(element) {
         if (!!element) {
             return true;
