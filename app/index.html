@@ -1,0 +1,47 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+    <title>Form</title>
+    <meta name="viewport" content="width:device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+    <link rel="stylesheet" href="css/global.css">
+</head>
+
+<body>
+    <div class="grid-x">
+        <div class="cell small-12 medium-4 form">
+            <form>
+                <h1>Scrivi un Messaggio</h1>
+                <label for="Nome">Nome</label>
+                <input required id="Nome" type="text" />
+
+                <label for="Cognome">Cognome</label>
+                <input required id="Cognome" type="text" />
+
+                <label for="Oggetto">Oggetto</label>
+                <input id="Oggetto" type="text" />
+
+                <label for="Messaggio">Messaggio</label>
+                <textarea required id="Messaggio" type="text"></textarea>
+                <input id="user" class="button" type="hidden" />
+
+                <input class="button" type="submit" id="Invia" value="Invia" />
+            </form>
+        </div>
+        <div class="cell small-12 medium-8 medium-offset-4">
+            <div class="errore"></div>
+            <div class="allMessage newMessage">
+
+            </div>
+        </div>
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+    </script>
+    <script src="js/main.js">
+    </script>
+</body>
+
+</html>
