@@ -1,0 +1,45 @@
+.newMessage {
+    border: 4px solid white;
+    transition: 0.2s ease-out;
+    &-active {
+        transition: 0.2s ease-out;
+        border: 4px solid rgb(187, 187, 187) !important;
+    }
+}
+
+.message {
+    word-wrap: break-word;
+    font-size: 18px;
+    border: 1px solid rgb(221, 221, 221);
+    padding: 10px; // opacity: 0;
+    background-color: aliceblue;
+    margin: 2%;
+    border-radius: 45px;
+    border-bottom-left-radius: 0;
+    p:nth-child(1) {
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    p:nth-child(2) {
+        font-size: smaller;
+    }
+    p:nth-child(3) {
+        font-style: italic;
+    }
+    &:nth-child(1) {
+        margin-top: 50px;
+        border: 4px solid #5ab1f9;
+        border-bottom-left-radius: 0;
+        animation: screw .5s ease-in-out;
+    }
+}
+
+.allMessage {
+    background-image: url("../img/bg.jpg");
+    background-size: auto;
+    overflow: auto;
+    position: absolute;
+    width: 66.66%;
+    top: 0;
+    height: 100vh;
+}

@@ -1,28 +1,3 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Montserrat', sans-serif;
-}
-
-html {
-    height: 100%;
-    width: 100%;
-}
-
-.newMessage {
-    border: 4px solid white;
-    transition: 0.2s ease-out;
-
-    &-active {
-        transition: 0.2s ease-out;
-        border: 4px solid rgb(187, 187, 187) !important;
-    }
-}
-
-h1 {
-    text-align: center;
-}
-
 form {
     height: 100%;
     border: 2px solid #efefef;
@@ -41,63 +16,6 @@ form {
     textarea {
         min-height: 130px;
     }
-}
-
-.form {
-    padding-left: 40px;
-    position: fixed;
-}
-
-.grid-x {
-    &>div:nth-child(1) {
-        margin-top: 4%;
-    }
-}
-
-.message {
-    word-wrap: break-word;
-    font-size: 18px;
-    border: 1px solid rgb(221, 221, 221);
-    padding: 10px;
-    // opacity: 0;
-    background-color: aliceblue;
-    margin: 2%;
-    border-radius: 45px;
-    border-bottom-left-radius: 0;
-
-    p:nth-child(1) {
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    p:nth-child(2) {
-        font-size: smaller;
-    }
-
-    p:nth-child(3) {
-        font-style: italic;
-    }
-
-    &:nth-child(1) {
-        margin-top: 50px;
-        border: 4px solid #5ab1f9;
-        border-bottom-left-radius: 0;
-        animation: screw .5s ease-in-out;
-    }
-}
-
-.allMessage {
-    background-image: url("../img/bg.jpg");
-    background-size: auto;
-    overflow: auto;
-    height: 100vh;
-}
-
-.hidden {
-    visibility: hidden;
-    height: 0;
-    margin: 0;
-    padding: 0;
 }
 
 @keyframes screw {
