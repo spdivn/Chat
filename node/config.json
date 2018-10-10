@@ -1,0 +1,14 @@
+{
+    "styles": {
+        "source": "source/scss",
+        "distribution": "distribution/scss"
+    },
+    "js": {
+        "source": "source/js",
+        "distribution": "distribution/js"
+    },
+    "html": {
+        "source": "source/html",
+        "distribution": "distribution/html"
+    }
+}
